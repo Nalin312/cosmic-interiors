@@ -1,582 +1,1241 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cosmic Interiors — Luxury Interior Design Studio</title>
+﻿@extends('layouts.app')
+@section('title', 'Cosmic Interiors | Thoughtful Interiors Crafted for Modern Living')
+@section('styles')
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
+.ci-why {
+    background: #FFFFFF;
+    padding: 64px 0;
+    border-top: 1px solid #E8DDD4;
+    border-bottom: 1px solid #E8DDD4;
+}
 
-  :root {
-    --primary: #1a0a7a;
-    --primary-light: #2d1ab5;
-    --text: #000000;
-    --text-muted: #555555;
-    --bg: #faf9f7;
-    --bg-soft: #f4f1ec;
-    --white: #ffffff;
-    --font-display: 'Cormorant Garamond', Georgia, serif;
-    --font-body: Arial, Helvetica, sans-serif;
-  }
+.ci-why__header {
+    text-align: center;
+    margin-bottom: 48px;
+}
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body { font-family: var(--font-body); background: var(--bg); color: var(--text); overflow-x: hidden; }
+.ci-why__label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #8B5E3C;
+    margin-bottom: 10px;
+}
 
-  /* NAV */
-  #navbar {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    padding: 20px 7vw;
-    display: flex; align-items: center; justify-content: space-between;
-    transition: all .5s ease;
-  }
-  #navbar.scrolled {
-    background: rgba(250,249,247,.97);
-    backdrop-filter: blur(20px);
-    padding: 14px 7vw;
-    border-bottom: 1px solid rgba(26,10,122,.1);
-    box-shadow: 0 2px 30px rgba(26,10,122,.05);
-  }
-  .nav-logo { text-decoration: none; display: flex; align-items: center; }
-  .nav-logo-img {
-    height: 52px; width: auto; object-fit: contain;
-    filter: brightness(0) invert(1);
-    transition: filter .4s;
-  }
-  #navbar.scrolled .nav-logo-img { filter: none; }
-  .nav-links { display: flex; gap: 36px; list-style: none; }
-  .nav-links a {
-    font-family: var(--font-body); font-size: .65rem;
-    letter-spacing: .2em; text-transform: uppercase;
-    color: rgba(255,255,255,.7); text-decoration: none; transition: color .3s;
-  }
-  .nav-links a:hover { color: #fff; }
-  #navbar.scrolled .nav-links a { color: #888888; }
-  #navbar.scrolled .nav-links a:hover { color: var(--primary); }
-  .nav-cta {
-    font-family: var(--font-body); font-size: .6rem;
-    letter-spacing: .22em; text-transform: uppercase;
-    color: rgba(255,255,255,.85);
-    border: 1px solid rgba(255,255,255,.35);
-    padding: 11px 28px; text-decoration: none; transition: all .3s;
-  }
-  .nav-cta:hover { background: rgba(255,255,255,.12); }
-  #navbar.scrolled .nav-cta { background: var(--primary); color: #fff; border-color: var(--primary); }
+.ci-why__heading {
+    font-family: var(--font-serif);
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    color: #2C1509;
+    font-weight: 600;
+    line-height: 1.2;
+}
 
-  /* HERO */
-  #hero { height: 100vh; position: relative; overflow: hidden; display: flex; align-items: center; }
-  .hero-bg { position: absolute; inset: 0; }
-  .hero-bg img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.07); animation: hzoom 16s ease forwards; }
-  @keyframes hzoom { to { transform: scale(1); } }
-  .hero-bg::after {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(105deg, rgba(10,5,40,.9) 0%, rgba(10,5,40,.7) 45%, rgba(10,5,40,.25) 100%);
-  }
-  .hero-inner { position: relative; z-index: 2; padding: 0 7vw; max-width: 780px; }
-  .hero-eyebrow {
-    display: flex; align-items: center; gap: 16px; margin-bottom: 36px;
-    opacity: 0; animation: aUp .8s ease .3s forwards;
-  }
-  .hero-eyebrow-line { width: 40px; height: 1px; background: rgba(255,255,255,.4); }
-  .hero-eyebrow span {
-    font-family: var(--font-body); font-size: .58rem; letter-spacing: .45em;
-    text-transform: uppercase; color: rgba(255,255,255,.6);
-  }
-  .hero-title {
-    font-family: var(--font-display); font-size: clamp(3.2rem, 5.5vw, 6.4rem);
-    font-weight: 300; line-height: 1.08; color: #fff; margin-bottom: 30px;
-    opacity: 0; animation: aUp .9s ease .5s forwards;
-  }
-  .hero-title em { font-style: italic; color: rgba(255,255,255,.6); }
-  .hero-desc {
-    font-family: var(--font-body); font-size: .85rem; line-height: 1.95;
-    color: rgba(255,255,255,.5); max-width: 400px; margin-bottom: 52px;
-    opacity: 0; animation: aUp .9s ease .7s forwards;
-  }
-  .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; opacity: 0; animation: aUp .9s ease .9s forwards; }
-  .btn-fill {
-    font-family: var(--font-body); font-size: .62rem; letter-spacing: .22em; text-transform: uppercase;
-    background: var(--primary); color: #fff;
-    padding: 16px 44px; text-decoration: none; font-weight: 700;
-    transition: all .3s; display: inline-block;
-  }
-  .btn-fill:hover { background: var(--primary-light); transform: translateY(-2px); }
-  .btn-ghost {
-    font-family: var(--font-body); font-size: .62rem; letter-spacing: .22em; text-transform: uppercase;
-    color: rgba(255,255,255,.75); border: 1px solid rgba(255,255,255,.3);
-    padding: 16px 44px; text-decoration: none; transition: all .3s; display: inline-block;
-  }
-  .btn-ghost:hover { border-color: rgba(255,255,255,.75); color: #fff; }
-  .hero-stats-bar {
-    position: absolute; bottom: 0; left: 0; right: 0; z-index: 2;
-    display: flex; opacity: 0; animation: aFade 1s ease 1.3s forwards;
-  }
-  .hero-stat {
-    flex: 1; padding: 28px 0; text-align: center;
-    background: rgba(10,5,40,.85); backdrop-filter: blur(12px);
-    border-right: 1px solid rgba(255,255,255,.08);
-  }
-  .hero-stat:last-child { border-right: none; }
-  .hero-stat-num { font-family: var(--font-display); font-size: 2.2rem; font-weight: 300; color: #fff; line-height: 1; }
-  .hero-stat-label { font-family: var(--font-body); font-size: .55rem; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.35); margin-top: 7px; }
+.ci-why__marquee {
+    width: 100%;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+}
 
-  /* MARQUEE */
-  #marquee { background: var(--primary); padding: 14px 0; overflow: hidden; }
-  .mq-track { display: flex; animation: mq 32s linear infinite; white-space: nowrap; }
-  .mq-item {
-    font-family: var(--font-body); font-size: .55rem; letter-spacing: .38em; text-transform: uppercase;
-    color: rgba(255,255,255,.4); padding: 0 52px; flex-shrink: 0;
-    display: flex; align-items: center; gap: 24px;
-  }
-  .mq-item::after { content: '✦'; font-size: .35rem; color: rgba(255,255,255,.2); }
-  @keyframes mq { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.ci-why__track {
+    display: inline-flex;
+    align-items: center;
+    width: max-content;
+    animation: ci-why-scroll 28s linear infinite;
+}
 
-  /* COMMON */
-  .section-tag {
-    font-family: var(--font-body); font-size: .56rem; letter-spacing: .42em; text-transform: uppercase;
-    color: var(--primary); margin-bottom: 20px;
-    display: flex; align-items: center; gap: 14px;
-  }
-  .section-tag::before { content: ''; width: 28px; height: 1px; background: var(--primary); }
-  .section-tag.light { color: rgba(255,255,255,.6); }
-  .section-tag.light::before { background: rgba(255,255,255,.4); }
-  .section-tag.center { justify-content: center; }
-  .section-tag.center::before { display: none; }
-  .section-title { font-family: var(--font-display); font-size: clamp(2.2rem, 3.2vw, 3.8rem); font-weight: 300; line-height: 1.13; color: var(--text); }
-  .section-title em { font-style: italic; color: var(--primary); }
-  .btn-primary {
-    font-family: var(--font-body); font-size: .62rem; letter-spacing: .22em; text-transform: uppercase;
-    background: var(--primary); color: #fff; padding: 15px 40px;
-    text-decoration: none; display: inline-block; transition: all .3s; font-weight: 500;
-  }
-  .btn-primary:hover { background: var(--primary-light); transform: translateY(-2px); }
-  .btn-outline {
-    font-family: var(--font-body); font-size: .62rem; letter-spacing: .22em; text-transform: uppercase;
-    color: var(--primary); border: 1px solid rgba(26,10,122,.3);
-    padding: 13px 36px; text-decoration: none; display: inline-block; transition: all .3s;
-  }
-  .btn-outline:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
-  .btn-white {
-    font-family: var(--font-body); font-size: .62rem; letter-spacing: .22em; text-transform: uppercase;
-    background: #fff; color: var(--primary); padding: 15px 40px;
-    text-decoration: none; display: inline-block; font-weight: 600; transition: all .3s;
-  }
-  .btn-white:hover { background: #e8e8f5; }
+.ci-why__marquee:hover .ci-why__track {
+    animation-play-state: paused;
+}
 
-  /* ABOUT */
-  #about { padding: 130px 7vw; background: var(--bg); display: grid; grid-template-columns: 1fr 1fr; gap: 90px; align-items: center; }
-  .about-images { position: relative; }
-  .about-img-main { width: 100%; height: 580px; object-fit: cover; display: block; }
-  .about-img-small { position: absolute; width: 210px; height: 270px; object-fit: cover; bottom: -44px; right: -44px; border: 6px solid var(--bg); box-shadow: 0 20px 60px rgba(0,0,0,.14); }
-  .about-badge { position: absolute; top: -28px; left: -28px; background: var(--primary); width: 108px; height: 108px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; z-index: 1; box-shadow: 0 12px 40px rgba(26,10,122,.3); }
-  .about-badge-num { font-family: var(--font-display); font-size: 2.1rem; font-weight: 300; color: #fff; line-height: 1; }
-  .about-badge-txt { font-family: var(--font-body); font-size: .47rem; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.5); margin-top: 3px; }
-  .about-h2 { font-family: var(--font-display); font-size: clamp(2.2rem, 3vw, 3.6rem); font-weight: 300; line-height: 1.1; color: var(--text); margin: 22px 0 26px; }
-  .about-h2 em { font-style: italic; color: var(--primary); }
-  .about-p { font-family: var(--font-body); font-size: .84rem; line-height: 2; color: var(--text-muted); margin-bottom: 14px; }
-  .about-rule { width: 48px; height: 1.5px; background: var(--primary); opacity: .25; margin: 36px 0; }
-  .about-stats { display: flex; gap: 44px; margin-bottom: 44px; }
-  .ab-stat-num { font-family: var(--font-display); font-size: 2.6rem; font-weight: 300; color: var(--primary); line-height: 1; }
-  .ab-stat-label { font-family: var(--font-body); font-size: .58rem; letter-spacing: .16em; text-transform: uppercase; color: var(--text-muted); margin-top: 6px; }
+.ci-why__set {
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+    padding-inline: 18px;
+}
 
-  /* SERVICES */
-  #services { padding: 130px 7vw; background: var(--bg-soft); }
-  .sec-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; }
-  .svc-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 22px; }
-  .svc-c { background: var(--white); overflow: hidden; transition: transform .4s, box-shadow .4s; }
-  .svc-c:hover { transform: translateY(-8px); box-shadow: 0 28px 70px rgba(26,10,122,.11); }
-  .svc-c-img { width: 100%; height: 270px; object-fit: cover; transition: transform .8s ease; display: block; }
-  .svc-c:hover .svc-c-img { transform: scale(1.07); }
-  .svc-c-body { padding: 34px 30px; }
-  .svc-c-num { font-family: var(--font-body); font-size: .58rem; letter-spacing: .22em; color: var(--primary); text-transform: uppercase; margin-bottom: 14px; }
-  .svc-c-name { font-family: var(--font-display); font-size: 1.75rem; font-weight: 300; color: var(--text); margin-bottom: 14px; line-height: 1.2; }
-  .svc-c-desc { font-family: var(--font-body); font-size: .8rem; line-height: 1.85; color: var(--text-muted); margin-bottom: 26px; }
-  .svc-c-link { font-family: var(--font-body); font-size: .6rem; letter-spacing: .18em; text-transform: uppercase; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: gap .3s; }
-  .svc-c-link:hover { gap: 18px; }
+.ci-why__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+}
 
-  /* PORTFOLIO */
-  #portfolio { padding: 130px 7vw; background: var(--bg); }
-  .port-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 52px; }
-  .port-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; grid-template-rows: 400px 270px; gap: 14px; }
-  .port-cell { position: relative; overflow: hidden; }
-  .port-cell:first-child { grid-row: span 2; }
-  .port-cell img { width: 100%; height: 100%; object-fit: cover; transition: transform .9s ease; display: block; }
-  .port-cell:hover img { transform: scale(1.08); }
-  .port-info { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,5,40,.92) 0%, transparent 55%); display: flex; flex-direction: column; justify-content: flex-end; padding: 30px; opacity: 0; transition: opacity .4s; }
-  .port-cell:hover .port-info { opacity: 1; }
-  .port-cat { font-family: var(--font-body); font-size: .55rem; letter-spacing: .26em; text-transform: uppercase; color: rgba(255,255,255,.6); margin-bottom: 7px; }
-  .port-name { font-family: var(--font-display); font-size: 1.5rem; font-weight: 300; color: #fff; }
-  .port-cell:first-child .port-name { font-size: 2.2rem; }
+.ci-why__icon-wrap {
+    width: 46px;
+    height: 46px;
+    border-radius: 999px;
+    background: #F5EDE4;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
 
-  /* WHY */
-  #why { padding: 130px 7vw; background: var(--primary); display: grid; grid-template-columns: 1fr 1fr; gap: 90px; align-items: center; }
-  .why-img img { width: 100%; height: 540px; object-fit: cover; }
-  .why-h2 { font-family: var(--font-display); font-size: clamp(2.2rem, 3vw, 3.6rem); font-weight: 300; color: #fff; line-height: 1.1; margin: 20px 0 52px; }
-  .why-h2 em { font-style: italic; color: rgba(255,255,255,.55); }
-  .why-list { list-style: none; }
-  .why-li { display: flex; gap: 26px; padding: 26px 0; border-bottom: 1px solid rgba(255,255,255,.07); transition: padding-left .3s; }
-  .why-li:first-child { border-top: 1px solid rgba(255,255,255,.07); }
-  .why-li:hover { padding-left: 10px; }
-  .why-li-n { font-family: var(--font-display); font-size: 1.5rem; font-weight: 300; color: rgba(255,255,255,.3); flex-shrink: 0; min-width: 38px; line-height: 1.2; }
-  .why-li-title { font-family: var(--font-body); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: #fff; font-weight: 600; margin-bottom: 7px; }
-  .why-li-desc { font-family: var(--font-body); font-size: .79rem; line-height: 1.85; color: rgba(255,255,255,.42); }
+.ci-why__icon-wrap svg {
+    width: 24px;
+    height: 24px;
+    color: #8B5E3C;
+}
 
-  /* TESTIMONIALS */
-  #testimonials { padding: 130px 7vw; background: var(--bg-soft); }
-  .testi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 22px; margin-top: 60px; }
-  .testi-card { background: var(--white); padding: 46px 38px; border: 1px solid transparent; transition: border-color .3s, box-shadow .3s; }
-  .testi-card:hover { border-color: rgba(26,10,122,.15); box-shadow: 0 14px 44px rgba(26,10,122,.07); }
-  .testi-q { font-family: var(--font-display); font-size: 6rem; font-weight: 300; color: var(--primary); opacity: .12; line-height: 1; margin-bottom: 18px; }
-  .testi-stars { display: flex; gap: 4px; margin-bottom: 22px; }
-  .testi-stars span { color: var(--primary); font-size: .7rem; }
-  .testi-text { font-family: var(--font-body); font-size: .86rem; line-height: 1.95; font-style: italic; color: var(--text-muted); margin-bottom: 32px; }
-  .testi-rule { width: 32px; height: 1px; background: var(--primary); opacity: .2; margin-bottom: 26px; }
-  .testi-name { font-family: var(--font-body); font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--text); font-weight: 600; margin-bottom: 4px; }
-  .testi-loc { font-family: var(--font-body); font-size: .68rem; color: var(--text-muted); }
+.ci-why__name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #2C1509;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    margin: 0;
+}
 
-  /* PROCESS */
-  #process { padding: 130px 7vw; background: var(--bg); }
-  .proc-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 32px; margin-top: 76px; position: relative; }
-  .proc-grid::before { content: ''; position: absolute; top: 40px; left: 10%; right: 10%; height: 1px; background: repeating-linear-gradient(90deg, rgba(26,10,122,.2) 0, rgba(26,10,122,.2) 8px, transparent 8px, transparent 22px); }
-  .proc-card { text-align: center; padding: 0 14px; }
-  .proc-num-wrap { width: 80px; height: 80px; border-radius: 50%; border: 1.5px solid rgba(26,10,122,.2); display: flex; align-items: center; justify-content: center; margin: 0 auto 30px; background: var(--bg); position: relative; z-index: 1; transition: all .4s; }
-  .proc-card:hover .proc-num-wrap { background: var(--primary); border-color: var(--primary); }
-  .proc-num { font-family: var(--font-display); font-size: 1.7rem; font-weight: 300; color: var(--primary); transition: color .4s; }
-  .proc-card:hover .proc-num { color: #fff; }
-  .proc-title { font-family: var(--font-body); font-size: .68rem; letter-spacing: .16em; text-transform: uppercase; color: var(--text); font-weight: 700; margin-bottom: 14px; }
-  .proc-desc { font-family: var(--font-body); font-size: .79rem; line-height: 1.9; color: var(--text-muted); }
+.ci-why__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #CFAE88;
+    margin-inline: 10px;
+    flex-shrink: 0;
+}
 
-  /* CTA */
-  #cta { background: var(--primary); padding: 110px 7vw; display: grid; grid-template-columns: 1fr 1fr; gap: 90px; align-items: center; }
-  .cta-left h2 { font-family: var(--font-display); font-size: clamp(2.6rem, 4.2vw, 4.4rem); font-weight: 300; color: #fff; line-height: 1.08; margin-bottom: 22px; }
-  .cta-left h2 em { font-style: italic; color: rgba(255,255,255,.55); }
-  .cta-left p { font-family: var(--font-body); font-size: .84rem; line-height: 1.95; color: rgba(255,255,255,.45); margin-bottom: 42px; }
-  .cta-panel { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.15); padding: 46px; }
-  .cta-panel-title { font-family: var(--font-body); font-size: .56rem; letter-spacing: .34em; text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: 30px; }
-  .cta-row { display: flex; gap: 18px; align-items: flex-start; padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,.05); }
-  .cta-row:last-of-type { border-bottom: none; }
-  .cta-row-icon { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
-  .cta-row-label { font-family: var(--font-body); font-size: .53rem; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.28); margin-bottom: 4px; }
-  .cta-row-val { font-family: var(--font-body); font-size: .84rem; color: #fff; }
-  .cta-panel-btn { display: block; width: 100%; text-align: center; margin-top: 30px; font-family: var(--font-body); font-size: .62rem; letter-spacing: .22em; text-transform: uppercase; background: #fff; color: var(--primary); padding: 17px; text-decoration: none; font-weight: 700; transition: all .3s; }
-  .cta-panel-btn:hover { background: #e8e8f5; }
+@keyframes ci-why-scroll {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
 
-  /* FOOTER */
-  #footer { background: #080420; padding: 70px 7vw 32px; border-top: 1px solid rgba(255,255,255,.08); }
-  .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px; margin-bottom: 60px; }
-  .footer-logo-img { height: 50px; width: auto; object-fit: contain; margin-bottom: 16px; display: block; filter: brightness(0) invert(1); }
-  .footer-brand-desc { font-family: var(--font-body); font-size: .78rem; line-height: 1.9; color: rgba(255,255,255,.32); }
-  .footer-col-title { font-family: var(--font-body); font-size: .58rem; letter-spacing: .28em; text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: 24px; }
-  .footer-links { list-style: none; }
-  .footer-links li { margin-bottom: 12px; }
-  .footer-links a { font-family: var(--font-body); font-size: .79rem; color: rgba(255,255,255,.35); text-decoration: none; transition: color .3s; }
-  .footer-links a:hover { color: #fff; }
-  .footer-bottom { border-top: 1px solid rgba(255,255,255,.07); padding-top: 28px; display: flex; justify-content: space-between; align-items: center; }
-  .footer-copy { font-family: var(--font-body); font-size: .65rem; color: rgba(255,255,255,.2); }
+.ci-video {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
 
-  /* REVEAL */
-  .reveal { opacity: 0; transform: translateY(30px); transition: opacity .8s ease, transform .8s ease; }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
+.ci-video video {
+    width: 100%;
+    aspect-ratio: 16 / 7;
+    object-fit: cover;
+    display: block;
+}
 
-  @keyframes aUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
-  @keyframes aFade { from { opacity:0; } to { opacity:1; } }
+.ci-video::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0) 26%, rgba(0, 0, 0, 0) 74%, rgba(0, 0, 0, 0.35)),
+        linear-gradient(to right, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0) 18%, rgba(0, 0, 0, 0) 82%, rgba(0, 0, 0, 0.28));
+    pointer-events: none;
+}
 
-  /* RESPONSIVE */
-  @media(max-width:1100px) {
-    #about, #why { grid-template-columns: 1fr; gap: 50px; }
-    .about-img-small, .about-badge, .why-img { display: none; }
-    .svc-cards { grid-template-columns: 1fr 1fr; }
-    .proc-grid { grid-template-columns: 1fr 1fr; }
-    .proc-grid::before { display: none; }
-    #cta { grid-template-columns: 1fr; gap: 50px; }
-    .port-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
-    .port-cell:first-child { grid-row: span 1; height: 320px; }
-    .port-cell { height: 230px; }
-    .testi-grid { grid-template-columns: 1fr 1fr; }
-    .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
-  }
-  @media(max-width:768px) {
-    .nav-links, .nav-cta { display: none; }
-    .hero-title { font-size: 2.5rem; }
-    .hero-btns { flex-direction: column; align-items: flex-start; }
-    .hero-stats-bar { display: none; }
-    .svc-cards, .testi-grid { grid-template-columns: 1fr; }
-    .proc-grid { grid-template-columns: 1fr 1fr; }
-    .port-grid { grid-template-columns: 1fr; }
-    .port-cell, .port-cell:first-child { height: 260px; }
-    #about, #services, #portfolio, #why, #testimonials, #process, #cta { padding: 80px 6vw; }
-    .sec-header, .port-header { flex-direction: column; gap: 22px; align-items: flex-start; }
-    .footer-top { grid-template-columns: 1fr; }
-    .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
-  }
+.ci-video__badge {
+    position: absolute;
+    left: 50%;
+    bottom: 22px;
+    transform: translateX(-50%);
+    padding: 7px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    color: #FAF6F1;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    z-index: 1;
+}
 </style>
-</head>
-<body>
+@endsection
 
-<!-- NAV -->
-<nav id="navbar">
-  <a href="#" class="nav-logo">
-    <img src="/Images/Cosmic Logos (8) (1) (1).png" alt="Cosmic Interiors" class="nav-logo-img">
-  </a>
-  <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#services">Services</a></li>
-    <li><a href="#portfolio">Portfolio</a></li>
-    <li><a href="#process">Process</a></li>
-    <li><a href="#cta">Contact</a></li>
-  </ul>
-  <a href="#cta" class="nav-cta">Book Consultation</a>
-</nav>
+@section('content')
+<section class="ci-hero">
+    <div class="ci-hero__bg">
+        <img src="https://images.unsplash.com/photo-1618220179428-22790b461013?w=2200&q=80" alt="Warm luxury interior by Cosmic Interiors">
+    </div>
 
-<!-- HERO -->
-<section id="hero">
-  <div class="hero-bg">
-    <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1800&q=90" alt="Luxury Interior">
-  </div>
-  <div class="hero-inner">
-    <div class="hero-eyebrow">
-      <div class="hero-eyebrow-line"></div>
-      <span>Luxury Interior Design Studio · Since 2012</span>
+    <div class="container ci-hero__content">
+        <div class="ci-hero__left">
+            <span class="eyebrow">Cosmic Interiors</span>
+            <h1 class="display">Interiors designed around your life.</h1>
+            <p class="lead">From modular kitchens to full-home design, we shape calm, refined spaces that feel distinctly yours.</p>
+            <div class="ci-hero__trust">500+ homes crafted with care.</div>
+            <div class="inline-cluster">
+                <a href="#" class="btn btn--outline btn--outline-light">Explore Design Gallery</a>
+                <a href="{{ route('contact') }}" class="btn btn--secondary">Speak to a Designer</a>
+            </div>
+        </div>
+
+        <aside class="ci-hero__form" aria-label="Start your project form">
+            <h2 class="ci-hero__form-title">Start your project</h2>
+            <form action="{{ route('contact.submit') }}" method="POST">
+                @csrf
+                <input id="hero_name" name="name" type="text" placeholder="Enter your name" required>
+                <input id="hero_phone" name="phone" type="tel" placeholder="Enter your mobile number" required>
+                <select id="hero_city" name="city" required>
+                    <option value="">Select your property city</option>
+                    <option>Hyderabad</option>
+                    <option>Mumbai</option>
+                    <option>Bengaluru</option>
+                    <option>Chennai</option>
+                    <option>Pune</option>
+                    <option>Delhi NCR</option>
+                </select>
+                <button type="submit">Book Consultation</button>
+            </form>
+        </aside>
     </div>
-    <h1 class="hero-title">Spaces designed<br>to reflect <em>who<br>you truly are</em></h1>
-    <p class="hero-desc">India's most awarded interior design studio — crafting extraordinary homes and commercial spaces for those who refuse to settle for ordinary.</p>
-    <div class="hero-btns">
-      <a href="#portfolio" class="btn-fill">Explore Our Work</a>
-      <a href="#cta" class="btn-ghost">Book Consultation →</a>
-    </div>
-  </div>
-  <div class="hero-stats-bar">
-    <div class="hero-stat"><div class="hero-stat-num">500+</div><div class="hero-stat-label">Homes Designed</div></div>
-    <div class="hero-stat"><div class="hero-stat-num">12+</div><div class="hero-stat-label">Years of Excellence</div></div>
-    <div class="hero-stat"><div class="hero-stat-num">48</div><div class="hero-stat-label">Design Awards</div></div>
-    <div class="hero-stat"><div class="hero-stat-num">98%</div><div class="hero-stat-label">Client Satisfaction</div></div>
-  </div>
 </section>
 
-<!-- MARQUEE -->
-<div id="marquee"><div class="mq-track">
-  <span class="mq-item">Luxury Residential</span><span class="mq-item">Commercial Spaces</span><span class="mq-item">Hospitality Design</span><span class="mq-item">Turnkey Projects</span><span class="mq-item">Custom Furniture</span><span class="mq-item">Space Planning</span><span class="mq-item">Art Curation</span><span class="mq-item">Smart Homes</span>
-  <span class="mq-item">Luxury Residential</span><span class="mq-item">Commercial Spaces</span><span class="mq-item">Hospitality Design</span><span class="mq-item">Turnkey Projects</span><span class="mq-item">Custom Furniture</span><span class="mq-item">Space Planning</span><span class="mq-item">Art Curation</span><span class="mq-item">Smart Homes</span>
-</div></div>
-
-<!-- ABOUT -->
-<section id="about">
-  <div class="about-images reveal">
-    <img class="about-img-main" src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=900&q=85" alt="Studio">
-    <img class="about-img-small" src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=400&q=80" alt="Detail">
-    <div class="about-badge"><div class="about-badge-num">12</div><div class="about-badge-txt">Years of craft</div></div>
-  </div>
-  <div class="reveal">
-    <div class="section-tag">About Cosmic Interiors</div>
-    <h2 class="about-h2">Design rooted in<br><em>listening</em> and<br>obsessive craft</h2>
-    <p class="about-p">We don't follow trends — we follow your truth. Every space we create is a precise translation of who you are, how you live, and what brings you joy.</p>
-    <p class="about-p">For over 12 years, our team of architects, designers, and craftspeople have been transforming spaces across India into places people never want to leave.</p>
-    <div class="about-rule"></div>
-    <div class="about-stats">
-      <div><div class="ab-stat-num">500+</div><div class="ab-stat-label">Homes Done</div></div>
-      <div><div class="ab-stat-num">98%</div><div class="ab-stat-label">Satisfaction</div></div>
-      <div><div class="ab-stat-num">10yr</div><div class="ab-stat-label">Warranty</div></div>
+<section class="ci-why" aria-label="Why Choose Cosmic Interiors">
+    <div class="container">
+        <div class="ci-why__header">
+            <p class="ci-why__label">Why Choose Cosmic Interiors</p>
+            <h2 class="ci-why__heading">
+                Designed for confidence,<br>delivered with precision.
+            </h2>
+        </div>
     </div>
-    <a href="#why" class="btn-primary">Meet Our Studio</a>
-  </div>
+    <div class="ci-why__marquee">
+        <div class="ci-why__track">
+            <div class="ci-why__set">
+                <div class="ci-why__item">
+                    <div class="ci-why__icon-wrap">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 3h12l4 6-10 13L2 9z"/>
+                            <path d="M2 9h20M6 3l4 6m4 0 4-6"/>
+                        </svg>
+                    </div>
+                    <p class="ci-why__name">Premium Craftsmanship</p>
+                </div>
+                <div class="ci-why__item">
+                    <div class="ci-why__icon-wrap">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 9V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v2"/>
+                            <path d="M2 11a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5H2z"/>
+                            <path d="M4 16v2M20 16v2"/>
+                        </svg>
+                    </div>
+                    <p class="ci-why__name">Functional Luxury</p>
+                </div>
+                <div class="ci-why__item">
+                    <div class="ci-why__icon-wrap">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="5" y="3" width="14" height="18" rx="1.5"/>
+                            <path d="M12 3v18"/>
+                            <path d="M10 12h.01M14 12h.01"/>
+                        </svg>
+                    </div>
+                    <p class="ci-why__name">Tailored Storage</p>
+                </div>
+                <div class="ci-why__item">
+                    <div class="ci-why__icon-wrap">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m9 7-7 7 5 5 7-7"/>
+                            <path d="m14 4 6 6-2 2-6-6z"/>
+                            <path d="m2 21 3-3"/>
+                        </svg>
+                    </div>
+                    <p class="ci-why__name">Personalised Design</p>
+                </div>
+                <div class="ci-why__item">
+                    <div class="ci-why__icon-wrap">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2"/>
+                            <path d="M16 2v4M8 2v4M3 10h18"/>
+                            <path d="m9 16 2 2 4-4"/>
+                        </svg>
+                    </div>
+                    <p class="ci-why__name">Timely Delivery</p>
+                </div>
+            </div>
+            <span class="ci-why__dot" aria-hidden="true"></span>
+            <div class="ci-why__set" aria-hidden="true">
+                <div class="ci-why__item">
+                    <div class="ci-why__icon-wrap">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 3h12l4 6-10 13L2 9z"/>
+                            <path d="M2 9h20M6 3l4 6m4 0 4-6"/>
+                        </svg>
+                    </div>
+                    <p class="ci-why__name">Premium Craftsmanship</p>
+                </div>
+                <div class="ci-why__item">
+                    <div class="ci-why__icon-wrap">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 9V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v2"/>
+                            <path d="M2 11a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5H2z"/>
+                            <path d="M4 16v2M20 16v2"/>
+                        </svg>
+                    </div>
+                    <p class="ci-why__name">Functional Luxury</p>
+                </div>
+                <div class="ci-why__item">
+                    <div class="ci-why__icon-wrap">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="5" y="3" width="14" height="18" rx="1.5"/>
+                            <path d="M12 3v18"/>
+                            <path d="M10 12h.01M14 12h.01"/>
+                        </svg>
+                    </div>
+                    <p class="ci-why__name">Tailored Storage</p>
+                </div>
+                <div class="ci-why__item">
+                    <div class="ci-why__icon-wrap">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m9 7-7 7 5 5 7-7"/>
+                            <path d="m14 4 6 6-2 2-6-6z"/>
+                            <path d="m2 21 3-3"/>
+                        </svg>
+                    </div>
+                    <p class="ci-why__name">Personalised Design</p>
+                </div>
+                <div class="ci-why__item">
+                    <div class="ci-why__icon-wrap">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2"/>
+                            <path d="M16 2v4M8 2v4M3 10h18"/>
+                            <path d="m9 16 2 2 4-4"/>
+                        </svg>
+                    </div>
+                    <p class="ci-why__name">Timely Delivery</p>
+                </div>
+            </div>
+            <span class="ci-why__dot" aria-hidden="true"></span>
+        </div>
+    </div>
 </section>
 
-<!-- SERVICES -->
-<section id="services">
-  <div class="sec-header reveal">
-    <div>
-      <div class="section-tag">What We Do</div>
-      <h2 class="section-title">Crafting <em>excellence</em><br>across every space</h2>
-    </div>
-    <a href="#" class="btn-outline">View All Services</a>
-  </div>
-  <div class="svc-cards reveal">
-    <div class="svc-c">
-      <img class="svc-c-img" src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=85" alt="Residential">
-      <div class="svc-c-body">
-        <div class="svc-c-num">01 — Residential</div>
-        <h3 class="svc-c-name">Homes that<br>reflect you</h3>
-        <p class="svc-c-desc">From intimate apartments to sprawling villas — we design living spaces that are unmistakably, beautifully yours.</p>
-        <a href="#" class="svc-c-link">Explore Service →</a>
-      </div>
-    </div>
-    <div class="svc-c">
-      <img class="svc-c-img" src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=85" alt="Commercial">
-      <div class="svc-c-body">
-        <div class="svc-c-num">02 — Commercial</div>
-        <h3 class="svc-c-name">Workspaces that<br>inspire</h3>
-        <p class="svc-c-desc">Offices designed to attract great talent, impress clients, and help people do their best work every day.</p>
-        <a href="#" class="svc-c-link">Explore Service →</a>
-      </div>
-    </div>
-    <div class="svc-c">
-      <img class="svc-c-img" src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=85" alt="Hospitality">
-      <div class="svc-c-body">
-        <div class="svc-c-num">03 — Hospitality</div>
-        <h3 class="svc-c-name">Experiences guests<br>remember</h3>
-        <p class="svc-c-desc">Hotels and restaurants reimagined as immersive destinations where the space itself becomes the story.</p>
-        <a href="#" class="svc-c-link">Explore Service →</a>
-      </div>
-    </div>
-  </div>
+<section class="ci-video" aria-label="Cosmic Interiors cinematic showcase">
+    <video autoplay muted loop playsinline>
+        <source src="{{ asset('Images/homepagevideo.mp4') }}" type="video/mp4">
+    </video>
+    <div class="ci-video__badge">COSMIC INTERIORS</div>
 </section>
 
-<!-- PORTFOLIO -->
-<section id="portfolio">
-  <div class="port-header reveal">
-    <div>
-      <div class="section-tag">Selected Works</div>
-      <h2 class="section-title">Spaces that speak<br><em>for themselves</em></h2>
+<section class="ci-about" aria-label="About Cosmic Interiors">
+    <div class="container">
+        <div class="ci-about__content">
+            <div class="ci-about__text">
+                <span class="eyebrow">About Cosmic Interiors</span>
+                <h2 class="section-title">Crafting Spaces That Reflect Your Essence</h2>
+                <p>At Cosmic Interiors, we believe that exceptional design goes beyond aesthetics—it's about creating environments that harmonize beauty, functionality, and the unique rhythm of your life. With over a decade of expertise, our team of passionate designers transforms homes into sanctuaries of warmth and sophistication.</p>
+            </div>
+
+            <div class="ci-about__images">
+                <div class="ci-about__image-card">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80" alt="Modern living room interior design">
+                </div>
+                <div class="ci-about__image-card ci-about__image-card--small">
+                    <img src="https://images.unsplash.com/photo-1618220179428-22790b461013?w=350&q=80" alt="Luxury interior design details">
+                </div>
+            </div>
+        </div>
+
+        <div class="ci-about__shapes">
+            <svg viewBox="0 0 1200 180" class="ci-about__shape-svg" aria-hidden="true">
+                <defs>
+                    <linearGradient id="shapeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#735646;stop-opacity:0.15" />
+                        <stop offset="50%" style="stop-color:#A5937B;stop-opacity:0.12" />
+                        <stop offset="100%" style="stop-color:#735646;stop-opacity:0.15" />
+                    </linearGradient>
+                </defs>
+                <!-- Architectural base line -->
+                <line x1="0" y1="120" x2="1200" y2="120" stroke="#A5937B" stroke-width="1" opacity="0.3" />
+                <!-- Left architectural frame -->
+                <g opacity="0.25">
+                    <rect x="80" y="40" width="140" height="100" fill="none" stroke="#735646" stroke-width="1.5" />
+                    <line x1="80" y1="70" x2="220" y2="70" stroke="#735646" stroke-width="1" />
+                    <line x1="80" y1="90" x2="220" y2="90" stroke="#735646" stroke-width="1" />
+                </g>
+                <!-- Center decorative arch -->
+                <g opacity="0.2">
+                    <path d="M 550 140 Q 600 80 650 140" stroke="#A5937B" stroke-width="2" fill="none" stroke-linecap="round" />
+                    <circle cx="600" cy="140" r="3" fill="#735646" opacity="0.5" />
+                </g>
+                <!-- Right modern lines -->
+                <g opacity="0.25">
+                    <line x1="900" y1="50" x2="900" y2="130" stroke="#735646" stroke-width="1.5" />
+                    <line x1="930" y1="60" x2="930" y2="120" stroke="#735646" stroke-width="1" />
+                    <line x1="960" y1="70" x2="960" y2="130" stroke="#735646" stroke-width="1" />
+                </g>
+                <!-- Subtle geometric accents -->
+                <circle cx="300" cy="130" r="5" fill="none" stroke="#A5937B" stroke-width="1" opacity="0.3" />
+                <circle cx="1000" cy="145" r="4" fill="none" stroke="#735646" stroke-width="1" opacity="0.3" />
+            </svg>
+        </div>
     </div>
-    <a href="#" class="btn-primary">View Full Portfolio</a>
-  </div>
-  <div class="port-grid reveal">
-    <div class="port-cell"><img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=900&q=85" alt="Solaris"><div class="port-info"><div class="port-cat">Residential · Hyderabad</div><div class="port-name">The Solaris Penthouse</div></div></div>
-    <div class="port-cell"><img src="https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=700&q=80" alt="Nebula"><div class="port-info"><div class="port-cat">Hospitality · Mumbai</div><div class="port-name">Nebula Restaurant</div></div></div>
-    <div class="port-cell"><img src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=700&q=80" alt="Aurora"><div class="port-info"><div class="port-cat">Residential · Bengaluru</div><div class="port-name">Aurora Villa</div></div></div>
-    <div class="port-cell"><img src="https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=700&q=80" alt="Zenith"><div class="port-info"><div class="port-cat">Commercial · Hyderabad</div><div class="port-name">Zenith HQ</div></div></div>
-    <div class="port-cell"><img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=700&q=80" alt="Orion"><div class="port-info"><div class="port-cat">Residential · Delhi</div><div class="port-name">Orion Loft</div></div></div>
-  </div>
 </section>
 
-<!-- WHY -->
-<section id="why">
-  <div class="why-img reveal"><img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=800&q=85" alt="Why Cosmic"></div>
-  <div class="reveal">
-    <div class="section-tag light">Why Choose Us</div>
-    <h2 class="why-h2">What makes Cosmic<br><em>truly different</em></h2>
-    <ul class="why-list">
-      <li class="why-li"><span class="why-li-n">01</span><div><div class="why-li-title">We Listen First</div><div class="why-li-desc">Before a single sketch, we invest deep time truly understanding your life, preferences, and vision.</div></div></li>
-      <li class="why-li"><span class="why-li-n">02</span><div><div class="why-li-title">Obsessive Craft</div><div class="why-li-desc">We partner with master craftspeople and source premium materials — no shortcuts, ever.</div></div></li>
-      <li class="why-li"><span class="why-li-n">03</span><div><div class="why-li-title">90-Day Delivery</div><div class="why-li-desc">Our delivery promise is a commitment we take personally. Always on time, every time.</div></div></li>
-      <li class="why-li"><span class="why-li-n">04</span><div><div class="why-li-title">10 Year Warranty</div><div class="why-li-desc">Every installation is backed by our 10-year warranty — because quality should last a decade.</div></div></li>
-    </ul>
-    <div style="margin-top:44px"><a href="#about" class="btn-white">Learn More About Us</a></div>
-  </div>
+<section class="ci-showcase" aria-label="Cosmic Interiors Design Showcase">
+    <div class="container">
+        <header class="ci-showcase__header">
+            <span class="eyebrow">Design Showcase</span>
+            <h2 class="section-title">Curated Collections of Inspired Spaces</h2>
+            <p class="ci-showcase__intro">Explore our diverse portfolio of meticulously designed interiors, from modular kitchens to complete home transformations.</p>
+        </header>
+
+        <div class="ci-showcase__tabs" role="tablist">
+            <button class="ci-showcase__tab ci-showcase__tab--active" role="tab" aria-selected="true" aria-controls="tab-end-to-end" data-tab="end-to-end">
+                End-to-end offerings
+            </button>
+            <button class="ci-showcase__tab" role="tab" aria-selected="false" aria-controls="tab-modular-kitchen" data-tab="modular-kitchen">
+                Modular Kitchen Designs
+            </button>
+            <button class="ci-showcase__tab" role="tab" aria-selected="false" aria-controls="tab-living-room" data-tab="living-room">
+                Living Room Designs
+            </button>
+            <button class="ci-showcase__tab" role="tab" aria-selected="false" aria-controls="tab-wardrobe" data-tab="wardrobe">
+                Wardrobe Designs
+            </button>
+        </div>
+
+        <div class="ci-showcase__content">
+            <!-- End-to-end offerings -->
+            <div class="ci-showcase__panel ci-showcase__panel--active" id="tab-end-to-end" role="tabpanel">
+                <div class="ci-showcase__gallery">
+                    <div class="ci-showcase__card">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=500&q=80" alt="Complete home transformation with modern interiors">
+                        <h3 class="ci-showcase__card-title">Full Home Transformation</h3>
+                    </div>
+                    <div class="ci-showcase__card">
+                        <img src="https://images.unsplash.com/photo-1618220179428-22790b461013?w=500&q=80" alt="Luxury living space design by Cosmic Interiors">
+                        <h3 class="ci-showcase__card-title">Luxury Living Spaces</h3>
+                    </div>
+                    <div class="ci-showcase__card">
+                        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=500&q=80" alt="Contemporary apartment interior design">
+                        <h3 class="ci-showcase__card-title">Contemporary Apartments</h3>
+                    </div>
+                    <div class="ci-showcase__card">
+                        <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=500&q=80" alt="Premium residential design project">
+                        <h3 class="ci-showcase__card-title">Premium Projects</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modular Kitchen Designs -->
+            <div class="ci-showcase__panel" id="tab-modular-kitchen" role="tabpanel">
+                <div class="ci-showcase__gallery">
+                    <div class="ci-showcase__card">
+                        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=500&q=80" alt="Modern modular kitchen design">
+                        <h3 class="ci-showcase__card-title">Modern Kitchen Layout</h3>
+                    </div>
+                    <div class="ci-showcase__card">
+                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80" alt="Minimalist kitchen interiors">
+                        <h3 class="ci-showcase__card-title">Minimalist Kitchens</h3>
+                    </div>
+                    <div class="ci-showcase__card">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=500&q=80" alt="Custom modular kitchen solution">
+                        <h3 class="ci-showcase__card-title">Custom Solutions</h3>
+                    </div>
+                    <div class="ci-showcase__card">
+                        <img src="https://images.unsplash.com/photo-1618220179428-22790b461013?w=500&q=80" alt="Premium kitchen with luxury finishes">
+                        <h3 class="ci-showcase__card-title">Luxury Finishes</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Living Room Designs -->
+            <div class="ci-showcase__panel" id="tab-living-room" role="tabpanel">
+                <div class="ci-showcase__gallery">
+                    <div class="ci-showcase__card">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=500&q=80" alt="Contemporary living room design">
+                        <h3 class="ci-showcase__card-title">Contemporary Spaces</h3>
+                    </div>
+                    <div class="ci-showcase__card">
+                        <img src="https://images.unsplash.com/photo-1618220179428-22790b461013?w=500&q=80" alt="Warm and elegant living area">
+                        <h3 class="ci-showcase__card-title">Warm Elegance</h3>
+                    </div>
+                    <div class="ci-showcase__card">
+                        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=500&q=80" alt="Minimalist living room interiors">
+                        <h3 class="ci-showcase__card-title">Minimalist Living</h3>
+                    </div>
+                    <div class="ci-showcase__card">
+                        <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=500&q=80" alt="Luxury living room design">
+                        <h3 class="ci-showcase__card-title">Luxury Interiors</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wardrobe Designs -->
+            <div class="ci-showcase__panel" id="tab-wardrobe" role="tabpanel">
+                <div class="ci-showcase__gallery">
+                    <div class="ci-showcase__card">
+                        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=500&q=80" alt="Modern wardrobe storage solution">
+                        <h3 class="ci-showcase__card-title">Modern Storage</h3>
+                    </div>
+                    <div class="ci-showcase__card">
+                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80" alt="Luxury walk-in wardrobe design">
+                        <h3 class="ci-showcase__card-title">Walk-in Wardrobes</h3>
+                    </div>
+                    <div class="ci-showcase__card">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=500&q=80" alt="Contemporary wardrobe interiors">
+                        <h3 class="ci-showcase__card-title">Contemporary Designs</h3>
+                    </div>
+                    <div class="ci-showcase__card">
+                        <img src="https://images.unsplash.com/photo-1618220179428-22790b461013?w=500&q=80" alt="Premium wardrobe system">
+                        <h3 class="ci-showcase__card-title">Premium Systems</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ci-showcase__footer">
+            <a href="#" class="btn btn--outline">View Full Gallery</a>
+        </div>
+    </div>
 </section>
 
-<!-- TESTIMONIALS -->
-<section id="testimonials">
-  <div class="reveal">
-    <div class="section-tag">Client Stories</div>
-    <h2 class="section-title">Words from those<br>who <em>live our work</em></h2>
-  </div>
-  <div class="testi-grid reveal">
-    <div class="testi-card">
-      <div class="testi-q">"</div>
-      <div class="testi-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-      <p class="testi-text">Cosmic Interiors turned our apartment into a sanctuary. Every morning feels like waking up in a five-star hotel. The attention to detail is truly extraordinary.</p>
-      <div class="testi-rule"></div>
-      <div class="testi-name">Riya & Arjun Mehta</div>
-      <div class="testi-loc">Mumbai · Residential Project</div>
+<section class="ci-estimator" aria-label="Estimate Your Project">
+    <div class="container">
+        <header class="ci-estimator__header">
+            <span class="eyebrow">Estimate Your Project</span>
+            <h2 class="section-title">Begin with a clearer sense of your investment</h2>
+            <p class="ci-estimator__intro">Choose a calculator to explore interior pricing for your space and get a preliminary estimate.</p>
+        </header>
+
+        <div class="ci-estimator__cards">
+            <div class="ci-estimator__card ci-estimator__card--home">
+                <div class="ci-estimator__card-bg">
+                    <svg viewBox="0 0 400 300" aria-hidden="true" class="ci-estimator__abstract">
+                        <!-- Soft architectural shapes -->
+                        <defs>
+                            <linearGradient id="homeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#D9D3C7;stop-opacity:0.1" />
+                                <stop offset="100%" style="stop-color:#A5937B;stop-opacity:0.05" />
+                            </linearGradient>
+                        </defs>
+
+                        <!-- Background gradient -->
+                        <rect width="400" height="300" fill="url(#homeGradient)" />
+
+                        <!-- Architectural elements -->
+                        <rect x="50" y="80" width="120" height="80" rx="8" fill="none" stroke="#735646" stroke-width="1" opacity="0.15" />
+                        <rect x="60" y="90" width="100" height="60" rx="4" fill="none" stroke="#A5937B" stroke-width="1" opacity="0.1" />
+
+                        <!-- Arched elements -->
+                        <path d="M 200 60 Q 250 40 300 60" fill="none" stroke="#40291B" stroke-width="1" opacity="0.08" />
+                        <path d="M 220 70 Q 250 50 280 70" fill="none" stroke="#735646" stroke-width="1" opacity="0.12" />
+
+                        <!-- Wall panels -->
+                        <rect x="320" y="100" width="60" height="40" rx="2" fill="none" stroke="#D9D3C7" stroke-width="1" opacity="0.1" />
+                        <rect x="330" y="110" width="40" height="20" rx="1" fill="none" stroke="#A5937B" stroke-width="1" opacity="0.08" />
+
+                        <!-- Diagonal light shadows -->
+                        <path d="M 0 200 L 100 150 L 150 180 L 50 230 Z" fill="#40291B" opacity="0.03" />
+                        <path d="M 350 50 L 400 30 L 400 80 L 370 70 Z" fill="#735646" opacity="0.04" />
+
+                        <!-- Soft curves -->
+                        <path d="M 150 250 Q 200 220 250 250" fill="none" stroke="#A5937B" stroke-width="1" opacity="0.06" />
+                    </svg>
+                </div>
+
+                <div class="ci-estimator__card-content">
+                    <div class="ci-estimator__card-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M3 10.5 12 3l9 7.5"/>
+                            <path d="M5.5 9.5V21h13V9.5"/>
+                            <rect x="8" y="12" width="8" height="4" rx="1" fill="none" stroke="currentColor" stroke-width="1"/>
+                        </svg>
+                    </div>
+                    <h3 class="ci-estimator__card-title">Home Interior Price Calculator</h3>
+                    <p class="ci-estimator__card-desc">Calculate costs for complete home transformations and room renovations.</p>
+                    <a href="{{ route('price-calculators.home-interior-price-calculator') }}" class="btn btn--primary">Start Estimating</a>
+                </div>
+            </div>
+
+            <div class="ci-estimator__card ci-estimator__card--kitchen">
+                <div class="ci-estimator__card-bg">
+                    <svg viewBox="0 0 400 300" aria-hidden="true" class="ci-estimator__abstract">
+                        <defs>
+                            <linearGradient id="kitchenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#A5937B;stop-opacity:0.08" />
+                                <stop offset="100%" style="stop-color:#735646;stop-opacity:0.06" />
+                            </linearGradient>
+                        </defs>
+
+                        <!-- Background gradient -->
+                        <rect width="400" height="300" fill="url(#kitchenGradient)" />
+
+                        <!-- Kitchen cabinet shapes -->
+                        <rect x="40" y="120" width="80" height="60" rx="4" fill="none" stroke="#40291B" stroke-width="1" opacity="0.12" />
+                        <rect x="50" y="130" width="60" height="40" rx="2" fill="none" stroke="#735646" stroke-width="1" opacity="0.08" />
+
+                        <rect x="280" y="140" width="90" height="50" rx="4" fill="none" stroke="#A5937B" stroke-width="1" opacity="0.1" />
+                        <rect x="290" y="150" width="70" height="30" rx="2" fill="none" stroke="#D9D3C7" stroke-width="1" opacity="0.07" />
+
+                        <!-- Countertop lines -->
+                        <line x1="40" y1="180" x2="120" y2="180" stroke="#40291B" stroke-width="1" opacity="0.1" />
+                        <line x1="280" y1="190" x2="370" y2="190" stroke="#735646" stroke-width="1" opacity="0.08" />
+
+                        <!-- Island shape -->
+                        <ellipse cx="200" cy="220" rx="60" ry="30" fill="none" stroke="#A5937B" stroke-width="1" opacity="0.06" />
+
+                        <!-- Wall units -->
+                        <rect x="150" y="60" width="100" height="30" rx="2" fill="none" stroke="#D9D3C7" stroke-width="1" opacity="0.09" />
+                        <rect x="160" y="70" width="80" height="10" rx="1" fill="none" stroke="#735646" stroke-width="1" opacity="0.06" />
+
+                        <!-- Soft curves and arches -->
+                        <path d="M 180 100 Q 200 80 220 100" fill="none" stroke="#40291B" stroke-width="1" opacity="0.05" />
+                        <path d="M 160 250 Q 200 230 240 250" fill="none" stroke="#A5937B" stroke-width="1" opacity="0.04" />
+
+                        <!-- Light shadows -->
+                        <path d="M 0 280 L 80 240 L 120 260 L 40 300 Z" fill="#735646" opacity="0.03" />
+                    </svg>
+                </div>
+
+                <div class="ci-estimator__card-content">
+                    <div class="ci-estimator__card-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="3" y="6" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1"/>
+                            <rect x="7" y="10" width="10" height="4" rx="1" fill="none" stroke="currentColor" stroke-width="1"/>
+                            <circle cx="9" cy="16" r="1" fill="currentColor"/>
+                            <circle cx="15" cy="16" r="1" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h3 class="ci-estimator__card-title">Kitchen Price Calculator</h3>
+                    <p class="ci-estimator__card-desc">Get estimates for modular kitchens, cabinets, and kitchen renovations.</p>
+                    <a href="{{ route('price-calculators.kitchen-price-calculator') }}" class="btn btn--primary">Start Estimating</a>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="testi-card">
-      <div class="testi-q">"</div>
-      <div class="testi-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-      <p class="testi-text">Our restaurant bookings tripled in a month. Guests come just for the experience of the space. Cosmic Interiors is pure magic and excellence.</p>
-      <div class="testi-rule"></div>
-      <div class="testi-name">Sanjay Khanna</div>
-      <div class="testi-loc">Bengaluru · Hospitality Project</div>
-    </div>
-    <div class="testi-card">
-      <div class="testi-q">"</div>
-      <div class="testi-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-      <p class="testi-text">They delivered a workspace that energises everyone who walks through the door. This is what world-class design truly feels like.</p>
-      <div class="testi-rule"></div>
-      <div class="testi-name">Priya Venkatesh</div>
-      <div class="testi-loc">Hyderabad · Commercial Project</div>
-    </div>
-  </div>
 </section>
 
-<!-- PROCESS -->
-<section id="process">
-  <div class="reveal" style="text-align:center">
-    <div class="section-tag center">How We Work</div>
-    <h2 class="section-title">From <em>conversation</em> to creation</h2>
-  </div>
-  <div class="proc-grid reveal">
-    <div class="proc-card"><div class="proc-num-wrap"><span class="proc-num">01</span></div><div class="proc-title">Discovery</div><p class="proc-desc">We listen deeply — your lifestyle, aspirations, and what home truly means to you shapes everything.</p></div>
-    <div class="proc-card"><div class="proc-num-wrap"><span class="proc-num">02</span></div><div class="proc-title">Concept & Design</div><p class="proc-desc">Stunning 3D renders, moodboards, and curated material selections before a single nail is driven.</p></div>
-    <div class="proc-card"><div class="proc-num-wrap"><span class="proc-num">03</span></div><div class="proc-title">Execution</div><p class="proc-desc">Skilled craftspeople bring every detail to life with obsessive precision — on time, on budget.</p></div>
-    <div class="proc-card"><div class="proc-num-wrap"><span class="proc-num">04</span></div><div class="proc-title">Your New Life</div><p class="proc-desc">A perfect handover backed by our 10-year warranty and dedicated aftercare support.</p></div>
-  </div>
+<section class="ci-process" aria-label="Our Design Process">
+    <div class="container">
+        <header class="ci-process__header">
+            <span class="eyebrow">How We Work</span>
+            <h2 class="section-title">A thoughtful journey, designed around you</h2>
+            <p class="ci-process__intro">From our first conversation to your final design, we guide you through each step with care and clarity.</p>
+        </header>
+
+        <div class="ci-process__steps">
+            <!-- Connecting line -->
+            <div class="ci-process__connector" aria-hidden="true"></div>
+
+            <div class="ci-process__step ci-process__step--1" data-step="1">
+                <div class="ci-process__step-visual">
+                    <div class="ci-process__step-icon">
+                        <img src="/Images/Business merger-bro.svg" alt="Connect with designer illustration" />
+                    </div>
+                    <div class="ci-process__step-bg">
+                        <svg viewBox="0 0 120 80" aria-hidden="true">
+                            <defs>
+                                <linearGradient id="step1Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#D9D3C7;stop-opacity:0.1" />
+                                    <stop offset="100%" style="stop-color:#A5937B;stop-opacity:0.05" />
+                                </linearGradient>
+                            </defs>
+                            <rect width="120" height="80" rx="8" fill="url(#step1Gradient)" />
+                            <circle cx="30" cy="25" r="8" fill="none" stroke="#735646" stroke-width="1" opacity="0.15" />
+                            <circle cx="90" cy="55" r="6" fill="none" stroke="#40291B" stroke-width="1" opacity="0.1" />
+                            <path d="M 15 40 Q 60 30 105 40" fill="none" stroke="#A5937B" stroke-width="1" opacity="0.08" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="ci-process__step-number">01</div>
+                <h3 class="ci-process__step-title">Connect with your designer</h3>
+                <p class="ci-process__step-desc">We begin with a warm conversation to understand your vision, lifestyle, and what makes your space feel like home.</p>
+            </div>
+
+            <div class="ci-process__step ci-process__step--2" data-step="2">
+                <div class="ci-process__step-visual">
+                    <div class="ci-process__step-icon">
+                        <img src="/Images/Interior design-bro.svg" alt="Explore your space illustration" />
+                    </div>
+                    <div class="ci-process__step-bg">
+                        <svg viewBox="0 0 120 80" aria-hidden="true">
+                            <defs>
+                                <linearGradient id="step2Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#A5937B;stop-opacity:0.08" />
+                                    <stop offset="100%" style="stop-color:#735646;stop-opacity:0.06" />
+                                </linearGradient>
+                            </defs>
+                            <rect width="120" height="80" rx="8" fill="url(#step2Gradient)" />
+                            <rect x="20" y="25" width="35" height="20" rx="2" fill="none" stroke="#40291B" stroke-width="1" opacity="0.12" />
+                            <rect x="65" y="35" width="30" height="15" rx="2" fill="none" stroke="#735646" stroke-width="1" opacity="0.1" />
+                            <line x1="20" y1="50" x2="95" y2="50" stroke="#D9D3C7" stroke-width="1" opacity="0.08" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="ci-process__step-number">02</div>
+                <h3 class="ci-process__step-title">Explore your space</h3>
+                <p class="ci-process__step-desc">Together we walk through your home, discussing layout, functionality, and the atmosphere you wish to create.</p>
+            </div>
+
+            <div class="ci-process__step ci-process__step--3" data-step="3">
+                <div class="ci-process__step-visual">
+                    <div class="ci-process__step-icon">
+                        <img src="/Images/Website Creator-bro.svg" alt="Review design concepts illustration" />
+                    </div>
+                    <div class="ci-process__step-bg">
+                        <svg viewBox="0 0 120 80" aria-hidden="true">
+                            <defs>
+                                <linearGradient id="step3Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#735646;stop-opacity:0.07" />
+                                    <stop offset="100%" style="stop-color:#40291B;stop-opacity:0.05" />
+                                </linearGradient>
+                            </defs>
+                            <rect width="120" height="80" rx="8" fill="url(#step3Gradient)" />
+                            <path d="M 25 20 Q 60 15 95 20" fill="none" stroke="#D9D3C7" stroke-width="1" opacity="0.1" />
+                            <path d="M 30 35 Q 60 30 90 35" fill="none" stroke="#A5937B" stroke-width="1" opacity="0.08" />
+                            <path d="M 35 50 Q 60 45 85 50" fill="none" stroke="#735646" stroke-width="1" opacity="0.06" />
+                            <circle cx="50" cy="30" r="3" fill="none" stroke="#40291B" stroke-width="1" opacity="0.12" />
+                            <circle cx="70" cy="45" r="2" fill="none" stroke="#A5937B" stroke-width="1" opacity="0.1" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="ci-process__step-number">03</div>
+                <h3 class="ci-process__step-title">Review design concepts</h3>
+                <p class="ci-process__step-desc">We present beautiful visualisations and mood boards, refining the design until it perfectly captures your vision.</p>
+            </div>
+
+            <div class="ci-process__step ci-process__step--4" data-step="4">
+                <div class="ci-process__step-visual">
+                    <div class="ci-process__step-icon">
+                        <img src="/Images/Cohort analysis-bro.svg" alt="Receive your estimate illustration" />
+                    </div>
+                    <div class="ci-process__step-bg">
+                        <svg viewBox="0 0 120 80" aria-hidden="true">
+                            <defs>
+                                <linearGradient id="step4Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#40291B;stop-opacity:0.06" />
+                                    <stop offset="100%" style="stop-color:#735646;stop-opacity:0.08" />
+                                </linearGradient>
+                            </defs>
+                            <rect width="120" height="80" rx="8" fill="url(#step4Gradient)" />
+                            <rect x="25" y="25" width="70" height="30" rx="2" fill="none" stroke="#D9D3C7" stroke-width="1" opacity="0.12" />
+                            <line x1="35" y1="35" x2="85" y2="35" stroke="#A5937B" stroke-width="1" opacity="0.1" />
+                            <line x1="35" y1="42" x2="75" y2="42" stroke="#735646" stroke-width="1" opacity="0.08" />
+                            <line x1="35" y1="49" x2="80" y2="49" stroke="#40291B" stroke-width="1" opacity="0.06" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="ci-process__step-number">04</div>
+                <h3 class="ci-process__step-title">Receive your estimate</h3>
+                <p class="ci-process__step-desc">We provide a transparent, detailed estimate with clear timelines and next steps to bring your vision to life.</p>
+            </div>
+        </div>
+
+        <div class="ci-process__cta">
+            <a href="{{ route('contact') }}" class="btn btn--primary">Start Your Journey</a>
+        </div>
+    </div>
 </section>
 
-<!-- CTA -->
-<section id="cta">
-  <div class="cta-left reveal">
-    <div class="section-tag light">Begin Your Journey</div>
-    <h2>Let's create something<br><em>extraordinary</em> together</h2>
-    <p>The first consultation is always free. Tell us about your dream space and we'll show you exactly how to make it real — beautifully, on time, and within budget.</p>
-    <a href="#" class="btn-white">Book Free Consultation</a>
-  </div>
-  <div class="cta-panel reveal">
-    <div class="cta-panel-title">Get In Touch With Us</div>
-    <div class="cta-row"><div class="cta-row-icon">📞</div><div><div class="cta-row-label">Call Us</div><div class="cta-row-val">+91 99999 99999</div></div></div>
-    <div class="cta-row"><div class="cta-row-icon">✉️</div><div><div class="cta-row-label">Email Us</div><div class="cta-row-val">hello@cosmicinteriors.in</div></div></div>
-    <div class="cta-row"><div class="cta-row-icon">📍</div><div><div class="cta-row-label">Our Studios</div><div class="cta-row-val">Hyderabad · Mumbai · Bengaluru</div></div></div>
-    <div class="cta-row"><div class="cta-row-icon">🕐</div><div><div class="cta-row-label">Working Hours</div><div class="cta-row-val">Mon – Sat, 9AM – 7PM</div></div></div>
-    <a href="#" class="cta-panel-btn">Start Your Project →</a>
-  </div>
+<section class="ci-design-process" aria-label="From Design to Move-In Process">
+    <div class="container">
+        <header class="ci-design-process__header">
+            <span class="eyebrow">From Design to Move-In</span>
+            <h2 class="section-title">Your complete interior journey</h2>
+            <p class="ci-design-process__intro">Six thoughtful steps that transform your vision into reality, from initial concept to final move-in.</p>
+        </header>
+
+        <div class="ci-design-process__stepper">
+            <!-- Step indicators -->
+            <div class="ci-design-process__indicators">
+                <div class="ci-design-process__line" aria-hidden="true"></div>
+                <div class="ci-design-process__circles">
+                    <button class="ci-design-process__circle ci-design-process__circle--active" data-step="1" aria-label="Step 1: Initial Consultation">
+                        <span class="ci-design-process__circle-number">1</span>
+                    </button>
+                    <button class="ci-design-process__circle" data-step="2" aria-label="Step 2: Design Concept">
+                        <span class="ci-design-process__circle-number">2</span>
+                    </button>
+                    <button class="ci-design-process__circle" data-step="3" aria-label="Step 3: Detailed Planning">
+                        <span class="ci-design-process__circle-number">3</span>
+                    </button>
+                    <button class="ci-design-process__circle" data-step="4" aria-label="Step 4: Execution">
+                        <span class="ci-design-process__circle-number">4</span>
+                    </button>
+                    <button class="ci-design-process__circle" data-step="5" aria-label="Step 5: Installation">
+                        <span class="ci-design-process__circle-number">5</span>
+                    </button>
+                    <button class="ci-design-process__circle" data-step="6" aria-label="Step 6: Move-In Ready">
+                        <span class="ci-design-process__circle-number">6</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigation arrows -->
+            <button class="ci-design-process__nav ci-design-process__nav--prev" aria-label="Previous step" disabled>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M15 18L9 12L15 6"/>
+                </svg>
+            </button>
+            <button class="ci-design-process__nav ci-design-process__nav--next" aria-label="Next step">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M9 18L15 12L9 6"/>
+                </svg>
+            </button>
+
+            <!-- Step content -->
+            <div class="ci-design-process__content">
+                <!-- Step 1 -->
+                <div class="ci-design-process__step ci-design-process__step--active" data-step="1">
+                    <div class="ci-design-process__step-text">
+                        <h3 class="ci-design-process__step-title">Initial Consultation</h3>
+                        <p class="ci-design-process__step-desc">We begin with a comprehensive discussion about your lifestyle, preferences, and vision for your space. This helps us understand what makes your home uniquely yours.</p>
+                    </div>
+                    <div class="ci-design-process__step-visual">
+                        <div class="ci-design-process__illustration-card">
+                            <img src="/Images/Business merger-bro.svg" alt="Initial consultation illustration" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="ci-design-process__step" data-step="2">
+                    <div class="ci-design-process__step-text">
+                        <h3 class="ci-design-process__step-title">Design Concept</h3>
+                        <p class="ci-design-process__step-desc">Our designers create initial mood boards and concept sketches that capture your style preferences and functional requirements.</p>
+                    </div>
+                    <div class="ci-design-process__step-visual">
+                        <div class="ci-design-process__illustration-card">
+                            <img src="/Images/Interior design-bro.svg" alt="Design concept illustration" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="ci-design-process__step" data-step="3">
+                    <div class="ci-design-process__step-text">
+                        <h3 class="ci-design-process__step-title">Detailed Planning</h3>
+                        <p class="ci-design-process__step-desc">We develop detailed floor plans, elevations, and specifications. This includes material selections, color palettes, and furniture layouts.</p>
+                    </div>
+                    <div class="ci-design-process__step-visual">
+                        <div class="ci-design-process__illustration-card">
+                            <img src="/Images/Website Creator-bro.svg" alt="Detailed planning illustration" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="ci-design-process__step" data-step="4">
+                    <div class="ci-design-process__step-text">
+                        <h3 class="ci-design-process__step-title">Execution</h3>
+                        <p class="ci-design-process__step-desc">Our project management team coordinates with craftsmen and suppliers to bring your design to life with precision and care.</p>
+                    </div>
+                    <div class="ci-design-process__step-visual">
+                        <div class="ci-design-process__illustration-card">
+                            <img src="/Images/Cohort analysis-bro.svg" alt="Execution illustration" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="ci-design-process__step" data-step="5">
+                    <div class="ci-design-process__step-text">
+                        <h3 class="ci-design-process__step-title">Installation</h3>
+                        <p class="ci-design-process__step-desc">Professional installation ensures every element is placed perfectly. We maintain quality control throughout the entire process.</p>
+                    </div>
+                    <div class="ci-design-process__step-visual">
+                        <div class="ci-design-process__illustration-card">
+                            <img src="/Images/Interior design-bro.svg" alt="Installation illustration" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="ci-design-process__step" data-step="6">
+                    <div class="ci-design-process__step-text">
+                        <h3 class="ci-design-process__step-title">Move-In Ready</h3>
+                        <p class="ci-design-process__step-desc">Your space is complete and ready for you to enjoy. We provide final walkthroughs and ensure everything meets our high standards.</p>
+                    </div>
+                    <div class="ci-design-process__step-visual">
+                        <div class="ci-design-process__illustration-card">
+                            <img src="/Images/Business merger-bro.svg" alt="Move-in ready illustration" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ci-design-process__cta">
+            <a href="{{ route('contact') }}" class="btn btn--primary">Begin Your Transformation</a>
+        </div>
+    </div>
 </section>
 
-<!-- FOOTER -->
-<footer id="footer">
-  <div class="footer-top">
-    <div>
-      <img src="/Images/Cosmic Logos (8) (1) (1).png" alt="Cosmic Interiors" class="footer-logo-img">
-      <p class="footer-brand-desc">India's most awarded interior design studio, crafting extraordinary homes and commercial spaces since 2012.</p>
+<section class="ci-luxe" aria-label="Cosmic Interiors Luxe">
+    <div class="ci-luxe__bg" aria-hidden="true">
+        <img src="/Images/homelux.jpg" alt="Cosmic Interiors Luxe space">
     </div>
-    <div>
-      <div class="footer-col-title">Navigate</div>
-      <ul class="footer-links">
-        <li><a href="#about">About Us</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#portfolio">Portfolio</a></li>
-        <li><a href="#process">Process</a></li>
-      </ul>
+    <div class="ci-luxe__card">
+        <p class="ci-luxe__intro">Introducing</p>
+        <div class="ci-luxe__brand" aria-label="Cosmic Interiors luxe">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 2L15 9H22L16.5 13.5L18.5 21L12 17L5.5 21L7.5 13.5L2 9H9L12 2Z" fill="currentColor"/>
+            </svg>
+            <span class="ci-luxe__brand-name">Cosmic Interiors</span>
+            <span class="ci-luxe__brand-script">luxe</span>
+        </div>
+        <a href="{{ route('contact') }}" class="ci-luxe__btn">Enter the world of Luxe</a>
     </div>
-    <div>
-      <div class="footer-col-title">Services</div>
-      <ul class="footer-links">
-        <li><a href="#">Residential</a></li>
-        <li><a href="#">Commercial</a></li>
-        <li><a href="#">Hospitality</a></li>
-        <li><a href="#">Turnkey</a></li>
-      </ul>
-    </div>
-    <div>
-      <div class="footer-col-title">Studios</div>
-      <ul class="footer-links">
-        <li><a href="#">Hyderabad</a></li>
-        <li><a href="#">Mumbai</a></li>
-        <li><a href="#">Bengaluru</a></li>
-        <li><a href="#">hello@cosmicinteriors.in</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span class="footer-copy">© 2024 Cosmic Interiors. All rights reserved.</span>
-    <span class="footer-copy">Privacy Policy · Terms of Service</span>
-  </div>
-</footer>
+</section>
 
-<script>
-  const nb = document.getElementById('navbar');
-  window.addEventListener('scroll', () => { nb.classList.toggle('scrolled', window.scrollY > 80); });
+<section class="ci-solutions" aria-label="End-to-end interior solutions">
+    <div class="container">
+        <h2 class="ci-solutions__heading">End-to-end interior solutions</h2>
 
-  const revealEls = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((e, i) => {
-      if (e.isIntersecting) {
-        e.target.style.transitionDelay = (i * 0.08) + 's';
-        e.target.classList.add('visible');
-        observer.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.12 });
-  revealEls.forEach(el => observer.observe(el));
-</script>
-</body>
-</html>
+        <div class="ci-solutions__grid">
+            <div class="ci-solutions__item">
+                <div class="ci-solutions__icon">
+                    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="10" y="10" width="16" height="8"/>
+                        <rect x="30" y="10" width="24" height="8"/>
+                        <path d="M10 30h44v14H34V34H10z"/>
+                        <line x1="24" y1="34" x2="24" y2="44"/>
+                    </svg>
+                </div>
+                <p class="ci-solutions__label">Modular Kitchen</p>
+            </div>
+
+            <div class="ci-solutions__item">
+                <div class="ci-solutions__icon">
+                    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="14" y="8" width="36" height="48"/>
+                        <line x1="32" y1="8" x2="32" y2="56"/>
+                        <line x1="28" y1="30" x2="28" y2="36"/>
+                        <line x1="36" y1="30" x2="36" y2="36"/>
+                    </svg>
+                </div>
+                <p class="ci-solutions__label">Storage &amp; Wardrobe</p>
+            </div>
+
+            <div class="ci-solutions__item">
+                <div class="ci-solutions__icon">
+                    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="10" y="8" width="44" height="48"/>
+                        <line x1="10" y1="24" x2="54" y2="24"/>
+                        <line x1="10" y1="40" x2="54" y2="40"/>
+                        <line x1="32" y1="8" x2="32" y2="56"/>
+                        <path d="M16 34c2-3 6-3 8 0"/>
+                        <path d="M36 34h10v6H36z"/>
+                    </svg>
+                </div>
+                <p class="ci-solutions__label">Crockery Units</p>
+            </div>
+
+            <div class="ci-solutions__item">
+                <div class="ci-solutions__icon">
+                    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="10" y="24" width="44" height="16" rx="3"/>
+                        <rect x="18" y="40" width="28" height="10" rx="2"/>
+                        <line x1="14" y1="40" x2="14" y2="48"/>
+                        <line x1="50" y1="40" x2="50" y2="48"/>
+                    </svg>
+                </div>
+                <p class="ci-solutions__label">Space Saving Furniture</p>
+            </div>
+
+            <div class="ci-solutions__item">
+                <div class="ci-solutions__icon">
+                    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="12" y="30" width="40" height="18" rx="2"/>
+                        <rect x="20" y="10" width="24" height="14" rx="1"/>
+                        <line x1="32" y1="24" x2="32" y2="30"/>
+                        <line x1="24" y1="38" x2="40" y2="38"/>
+                        <line x1="32" y1="30" x2="32" y2="48"/>
+                    </svg>
+                </div>
+                <p class="ci-solutions__label">TV Units</p>
+            </div>
+
+            <div class="ci-solutions__item">
+                <div class="ci-solutions__icon">
+                    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="12" y="24" width="40" height="6"/>
+                        <line x1="16" y1="30" x2="16" y2="52"/>
+                        <line x1="48" y1="30" x2="48" y2="52"/>
+                        <rect x="34" y="12" width="14" height="10"/>
+                        <rect x="20" y="34" width="14" height="16"/>
+                        <line x1="20" y1="42" x2="34" y2="42"/>
+                    </svg>
+                </div>
+                <p class="ci-solutions__label">Study Tables</p>
+            </div>
+
+            <div class="ci-solutions__item">
+                <div class="ci-solutions__icon">
+                    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M10 18h44"/>
+                        <path d="M14 18 20 34h24l6-16"/>
+                        <circle cx="32" cy="28" r="3"/>
+                        <path d="M24 42h16"/>
+                    </svg>
+                </div>
+                <p class="ci-solutions__label">False Ceiling</p>
+            </div>
+
+            <div class="ci-solutions__item">
+                <div class="ci-solutions__icon">
+                    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="32" y1="8" x2="32" y2="20"/>
+                        <circle cx="32" cy="8" r="3"/>
+                        <path d="M18 26h28l-4 12H22z"/>
+                        <line x1="24" y1="42" x2="40" y2="42"/>
+                    </svg>
+                </div>
+                <p class="ci-solutions__label">Lights</p>
+            </div>
+
+            <div class="ci-solutions__item">
+                <div class="ci-solutions__icon">
+                    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M16 20h24a6 6 0 0 1 6 6v24H22"/>
+                        <path d="M16 20a6 6 0 0 0 0 12h8"/>
+                        <line x1="30" y1="28" x2="32" y2="28"/>
+                        <line x1="36" y1="34" x2="38" y2="34"/>
+                        <line x1="30" y1="40" x2="32" y2="40"/>
+                        <line x1="36" y1="46" x2="38" y2="46"/>
+                    </svg>
+                </div>
+                <p class="ci-solutions__label">Wallpaper</p>
+            </div>
+
+            <div class="ci-solutions__item">
+                <div class="ci-solutions__icon">
+                    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="18" y="12" width="24" height="10" rx="2"/>
+                        <path d="M42 17h6v8l-10 8"/>
+                        <rect x="20" y="34" width="8" height="16" rx="1"/>
+                        <line x1="28" y1="38" x2="38" y2="30"/>
+                        <path d="M14 24v8"/>
+                    </svg>
+                </div>
+                <p class="ci-solutions__label">Wall Paint</p>
+            </div>
+
+            <div class="ci-solutions__item">
+                <div class="ci-solutions__icon">
+                    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="16" y="34" width="32" height="16" rx="2"/>
+                        <rect x="20" y="10" width="24" height="14" rx="1"/>
+                        <path d="M24 38c0 4 16 4 16 0"/>
+                        <line x1="32" y1="30" x2="32" y2="34"/>
+                        <path d="M32 30h6"/>
+                    </svg>
+                </div>
+                <p class="ci-solutions__label">Bathroom</p>
+            </div>
+
+            <div class="ci-solutions__item">
+                <div class="ci-solutions__icon">
+                    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M16 52V26a16 16 0 0 1 32 0v26"/>
+                        <line x1="12" y1="52" x2="52" y2="52"/>
+                        <line x1="16" y1="46" x2="48" y2="46"/>
+                        <line x1="20" y1="40" x2="44" y2="40"/>
+                        <path d="M28 32h8"/>
+                    </svg>
+                </div>
+                <p class="ci-solutions__label">Pooja Unit</p>
+            </div>
+
+            <div class="ci-solutions__item">
+                <div class="ci-solutions__icon">
+                    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="24" y="8" width="16" height="14" rx="1"/>
+                        <rect x="14" y="30" width="36" height="6"/>
+                        <line x1="18" y1="36" x2="18" y2="52"/>
+                        <line x1="46" y1="36" x2="46" y2="52"/>
+                        <line x1="24" y1="33" x2="40" y2="33"/>
+                    </svg>
+                </div>
+                <p class="ci-solutions__label">Foyer Designs</p>
+            </div>
+
+            <div class="ci-solutions__item">
+                <div class="ci-solutions__icon">
+                    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M16 26h20a4 4 0 0 1 4 4v10H16z"/>
+                        <path d="M16 26v-8h18a4 4 0 0 1 4 4v4"/>
+                        <line x1="40" y1="30" x2="46" y2="30"/>
+                        <line x1="46" y1="30" x2="46" y2="38"/>
+                        <circle cx="18" cy="44" r="2"/>
+                        <circle cx="28" cy="44" r="2"/>
+                        <circle cx="38" cy="44" r="2"/>
+                        <circle cx="48" cy="44" r="2"/>
+                    </svg>
+                </div>
+                <p class="ci-solutions__label">Movable Furniture</p>
+            </div>
+
+            <div class="ci-solutions__item">
+                <div class="ci-solutions__icon">
+                    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="14" y="34" width="34" height="12" rx="2"/>
+                        <line x1="50" y1="24" x2="50" y2="46"/>
+                        <line x1="56" y1="24" x2="56" y2="46"/>
+                        <line x1="50" y1="30" x2="56" y2="30"/>
+                        <line x1="50" y1="36" x2="56" y2="36"/>
+                        <line x1="50" y1="42" x2="56" y2="42"/>
+                        <path d="M22 14l2 4h4l-3 3 1 4-4-2-4 2 1-4-3-3h4z"/>
+                    </svg>
+                </div>
+                <p class="ci-solutions__label">Kids Bedroom</p>
+            </div>
+        </div>
+
+        <div class="ci-solutions__cta">
+            <a href="{{ route('contact') }}" class="btn btn--primary">BOOK FREE DESIGN SESSION</a>
+        </div>
+    </div>
+</section>
+
+<section class="ci-testimonials" aria-label="Client testimonials">
+    <div class="ci-testimonials__circle" aria-hidden="true"></div>
+    <div class="container" data-ci-testimonials>
+        <header class="ci-testimonials__header">
+            <span class="eyebrow">What Our Clients Say</span>
+            <h2 class="section-title">Stories from the homes we've shaped</h2>
+        </header>
+
+        <div class="ci-testimonials__card">
+            <div class="ci-testimonials__left">
+                <svg class="ci-testimonials__curve" viewBox="0 0 240 520" preserveAspectRatio="none" aria-hidden="true">
+                    <path d="M78 24 C170 120, 170 220, 78 320 C22 380, 24 450, 96 500" />
+                </svg>
+
+                <div class="ci-testimonials__rows" aria-label="Client list">
+                    <button type="button" class="ci-testimonials__row ci-testimonials__row--active" data-index="0" aria-label="Show testimonial from Priya Sharma">
+                        <img class="ci-testimonials__avatar-image" src="https://i.pravatar.cc/60?img=1" alt="Priya Sharma">
+                        <span class="ci-testimonials__row-body">
+                            <span class="ci-testimonials__name">Priya Sharma</span>
+                            <span class="ci-testimonials__meta"><span class="ci-testimonials__star">★</span> 4.9 | 29 Aug 2017</span>
+                        </span>
+                    </button>
+
+                    <button type="button" class="ci-testimonials__row" data-index="1" aria-label="Show testimonial from Rahul Mehta">
+                        <img class="ci-testimonials__avatar-image" src="https://i.pravatar.cc/60?img=2" alt="Rahul Mehta">
+                        <span class="ci-testimonials__row-body">
+                            <span class="ci-testimonials__name">Rahul Mehta</span>
+                            <span class="ci-testimonials__meta"><span class="ci-testimonials__star">★</span> 4.9 | 29 Aug 2017</span>
+                        </span>
+                    </button>
+
+                    <button type="button" class="ci-testimonials__row" data-index="2" aria-label="Show testimonial from Ananya Reddy">
+                        <img class="ci-testimonials__avatar-image" src="https://i.pravatar.cc/60?img=3" alt="Ananya Reddy">
+                        <span class="ci-testimonials__row-body">
+                            <span class="ci-testimonials__name">Ananya Reddy</span>
+                            <span class="ci-testimonials__meta"><span class="ci-testimonials__star">★</span> 4.9 | 29 Aug 2017</span>
+                        </span>
+                    </button>
+
+                    <button type="button" class="ci-testimonials__row" data-index="3" aria-label="Show testimonial from Vikram Nair">
+                        <img class="ci-testimonials__avatar-image" src="https://i.pravatar.cc/60?img=4" alt="Vikram Nair">
+                        <span class="ci-testimonials__row-body">
+                            <span class="ci-testimonials__name">Vikram Nair</span>
+                            <span class="ci-testimonials__meta"><span class="ci-testimonials__star">★</span> 4.9 | 29 Aug 2017</span>
+                        </span>
+                    </button>
+
+                    <button type="button" class="ci-testimonials__row" data-index="4" aria-label="Show testimonial from Sneha Iyer">
+                        <img class="ci-testimonials__avatar-image" src="https://i.pravatar.cc/60?img=5" alt="Sneha Iyer">
+                        <span class="ci-testimonials__row-body">
+                            <span class="ci-testimonials__name">Sneha Iyer</span>
+                            <span class="ci-testimonials__meta"><span class="ci-testimonials__star">★</span> 4.9 | 29 Aug 2017</span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="ci-testimonials__right">
+                <p class="ci-testimonials__label">Customer Reviews</p>
+                <span class="ci-testimonials__label-line" aria-hidden="true"></span>
+
+                <span class="ci-testimonials__quote-mark">“</span>
+                <div class="ci-testimonials__quote-content" data-ci-testimonials-content>
+                    <p class="ci-testimonials__quote" data-ci-testimonials-quote>Cosmic Interiors transformed our apartment into a sanctuary. Every detail was thoughtfully considered and the team was incredibly professional throughout.</p>
+                    <p class="ci-testimonials__author" data-ci-testimonials-author>Priya Sharma</p>
+                    <p class="ci-testimonials__project" data-ci-testimonials-project>Hyderabad | Full Home Design</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ci-faq" aria-label="Frequently Asked Questions">
+    <div class="container">
+        <h2 class="ci-faq__heading">Frequently Asked Questions</h2>
+
+        <div class="ci-faq__list" data-faq>
+            <article class="ci-faq__item faq-item">
+                <button type="button" class="ci-faq__trigger faq-trigger">
+                    <span class="ci-faq__question">How do I get started with Cosmic Interiors?</span>
+                    <svg class="ci-faq__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B5E3C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </button>
+                <div class="ci-faq__panel faq-panel">
+                    <div class="ci-faq__answer faq-panel__inner">Simply book a free consultation through our website or give us a call. One of our experienced designers will reach out to understand your vision, space requirements, and budget. From there we take care of everything — design, execution and delivery.</div>
+                </div>
+            </article>
+
+            <article class="ci-faq__item faq-item">
+                <button type="button" class="ci-faq__trigger faq-trigger">
+                    <span class="ci-faq__question">How long does a typical interior project take?</span>
+                    <svg class="ci-faq__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B5E3C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </button>
+                <div class="ci-faq__panel faq-panel">
+                    <div class="ci-faq__answer faq-panel__inner">Timelines vary based on the scope of work. A modular kitchen typically takes 4 to 6 weeks, while a complete home transformation can take between 10 and 14 weeks. We share a detailed project timeline at the start so you always know what to expect.</div>
+                </div>
+            </article>
+
+            <article class="ci-faq__item faq-item">
+                <button type="button" class="ci-faq__trigger faq-trigger">
+                    <span class="ci-faq__question">What does the Cosmic Interiors design process look like?</span>
+                    <svg class="ci-faq__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B5E3C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </button>
+                <div class="ci-faq__panel faq-panel">
+                    <div class="ci-faq__answer faq-panel__inner">We follow a thoughtful 6-step journey — initial consultation, design concept, detailed planning, execution, installation, and final move-in. At every stage your dedicated designer keeps you informed, involved, and confident.</div>
+                </div>
+            </article>
+
+            <article class="ci-faq__item faq-item">
+                <button type="button" class="ci-faq__trigger faq-trigger">
+                    <span class="ci-faq__question">Can I visit a Cosmic Interiors experience centre?</span>
+                    <svg class="ci-faq__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B5E3C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </button>
+                <div class="ci-faq__panel faq-panel">
+                    <div class="ci-faq__answer faq-panel__inner">Yes, we have experience centres in Hyderabad, Mumbai, and Bengaluru. You can explore material swatches, furniture samples, and full design mockups in person. Simply book a visit through our contact page and we will have a designer ready for you.</div>
+                </div>
+            </article>
+
+            <article class="ci-faq__item faq-item">
+                <button type="button" class="ci-faq__trigger faq-trigger">
+                    <span class="ci-faq__question">What services does Cosmic Interiors offer?</span>
+                    <svg class="ci-faq__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B5E3C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </button>
+                <div class="ci-faq__panel faq-panel">
+                    <div class="ci-faq__answer faq-panel__inner">We offer complete end-to-end interior solutions — modular kitchens, wardrobes, living rooms, bedrooms, home offices, bathrooms, false ceilings, lighting design, wall treatments, pooja units, and more. Everything is handled under one roof with a single point of contact.</div>
+                </div>
+            </article>
+
+            <article class="ci-faq__item faq-item">
+                <button type="button" class="ci-faq__trigger faq-trigger">
+                    <span class="ci-faq__question">Are your designs fully customisable to my taste?</span>
+                    <svg class="ci-faq__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B5E3C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </button>
+                <div class="ci-faq__panel faq-panel">
+                    <div class="ci-faq__answer faq-panel__inner">Absolutely. Every space we design is created entirely around you — your lifestyle, your preferences, and your personality. We do not work with pre-built templates. From layout and materials to colours and finishes, every single decision is made with your unique vision in mind.</div>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
